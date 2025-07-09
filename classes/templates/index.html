@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!----======== CSS ======== -->
+    <link rel="stylesheet" href="style.css">
+     
+    <!----===== Iconscout CSS ===== -->
+    <!-- <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css"> -->
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.8/css/line.css">
+
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <title>Academic Prediction System</title> 
+</head>
+<body>
+    <nav>
+        <div class="logo-name">
+            <div class="logo-image">
+                <img src="images/logo.png" alt="">
+            </div>
+
+            <span class="logo_name">APS</span>
+        </div>
+
+        <div class="menu-items">
+            <ul class="nav-links">
+                <li><a href="/index">
+                    <i class="uil uil-estate"></i>
+                    <span class="link-name">Dashboard</span>
+                </a></li>
+                <li><a href="/prediction">
+                    <i class="uil uil-files-landscapes"></i>
+                    <span class="link-name">Prediction</span>
+                </a></li>
+                <li><a href="/educatorprofile">
+                    <i class="uil uil-chart"></i>
+                    <span class="link-name">Profile</span>
+                </a></li>
+            </ul>
+            
+            <ul class="logout-mode">
+                <li><a href="/login">
+                    <i class="uil uil-signout"></i>
+                    <span class="link-name">Logout</span>
+                </a></li>
+
+                <li class="mode">
+                    <a href="#">
+                        <i class="uil uil-moon"></i>
+                    <span class="link-name">Dark Mode</span>
+                </a>
+
+                <div class="mode-toggle">
+                  <span class="switch"></span>
+                </div>
+            </li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="dashboard">
+        <div class="top">
+            <i class="uil uil-bars sidebar-toggle"></i>
+
+            <div class="search-box">
+                <i class="uil uil-search"></i>
+                <input type="text" placeholder="Search here...">
+            </div>
+            
+            <img src="images/profile.jpg" alt="">
+        </div>
+
+        <div class="dash-content">
+            <div class="overview">
+                <div class ="title">
+                    <p class="text" th:text="'Welcome, ' + ${userName} + '!'">Welcome!</p>
+                </div>
+                <div class="title">
+                    <i class="uil uil-tachometer-fast-alt"></i>
+                    <span class="text">Dashboard</span>
+
+                </div>
+                
+                <div class="charts-container">
+
+                    <div class="chart-box">
+                        <div class="title">
+                            <span class="text">Gender Distribution</span>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="genderBarChart"></canvas>
+                        </div>
+                        <div class="title">
+                            <span class="text">CGPA Band Distribution</span>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="cgpaBandChart"></canvas>
+                        </div>
+                    </div>
+                    
+
+                </div>
+            </div>
+
+            <div class="activity">
+                <div class="title">
+                    <i class="uil uil-clock-three"></i>
+                    <span class="text">Recent Prediction</span>
+                </div>
+
+                <div class="activity-data">
+                    <div class="data names">
+                        <span class="data-title">Name</span>
+                        <span class="data-list" th:text="${name}">Name Placeholder</span>
+                    </div>
+                    <div class="data email">
+                        <span class="data-title">Gender</span>
+                        <span class="data-list" th:text="${gender}">Gender Placeholder</span>
+                    </div>
+                    <div class="data joined">
+                        <span class="data-title">CGPA Prediction</span>
+                        <span class="data-list" th:text="${prediction}">Prediction Placeholder</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="script.js"></script>
+    <script>
+        fetch('/api/cgpa-bands')
+        .then(response => response.json())
+        .then(data => {
+            const labels = Object.keys(data);
+            const values = Object.values(data);
+
+            const ctx = document.getElementById('cgpaBandChart').getContext('2d');
+            new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                label: 'CGPA',
+                data: values,
+                backgroundColor: ['#ff6384', '#36a2eb', '#ffce56', '#4bc0c0'],
+                borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                y: { beginAtZero: true, title: { display: true, text: 'Number of Students' } },
+                x: { title: { display: true, text: 'CGPA Band' } }
+                }
+            }
+            });
+        });
+
+        fetch('/api/genderdistribution')
+            .then(res => res.json())
+            .then(data => {
+                console.log(data); // Check if data logs correctly
+                const labels = data.map(item => item.gender);
+                const counts = data.map(item => item.count);
+
+                const colors = data.map(item => {
+                    if (item.gender === "Male") return '#36a2eb';
+                    if (item.gender === "Female") return '#ff6384';
+                    return '#9b59b6'; // Fallback color
+                });
+
+                const ctx = document.getElementById('genderBarChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Number of Students',
+                            data: counts,
+                            backgroundColor: colors
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Gender Distribution'
+                            },
+                            legend: { display: false }
+                        }
+                    }
+                });
+            });
+    </script>
+
+</body>
+</html>

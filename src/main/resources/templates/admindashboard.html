@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <!-- ======== CSS ======== -->
+  <link rel="stylesheet" href="style.css" />
+  
+  <!-- ======== Iconscout CSS ======== -->
+  <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css" />
+
+  <title>Manage Educator Account</title>
+
+  <style>
+    /* Delete button styling */
+.button.delete-btn {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  font-weight: 500;
+}
+
+.button.delete-btn:hover {
+  background-color: #c0392b;
+}
+
+/* Add Educator form box */
+.add-educator-box {
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  /* max-width: 800px; */
+  width: 100%;
+  margin-top: 20px;
+}
+
+/* Form input styling */
+.input-field {
+  width: 100%;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  margin-top: 8px;
+  margin-bottom: 16px;
+  font-size: 14px;
+}
+
+/* Add button in form */
+.button.add-btn {
+  background-color: #3498db;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+
+.button.add-btn:hover {
+  background-color: #2980b9;
+}
+
+  </style>
+</head>
+<body>
+  <!-- Sidebar -->
+  <nav>
+    <div class="logo-name">
+      <div class="logo-image">
+        <img src="images/logo.png" alt="logo" />
+      </div>
+      <span class="logo_name">APS</span>
+    </div>
+
+    <div class="menu-items">
+      <ul class="nav-links">
+        <li><a href="/admindashboard"><i class="uil uil-estate"></i><span class="link-name">Dashboard</span></a></li>
+        <li><a href="/systemmonitor"><i class="uil uil-estate"></i><span class="link-name">System Monitor</span></a></li>
+      </ul>
+    
+      <ul class="logout-mode">
+        <li><a href="/login"><i class="uil uil-signout"></i><span class="link-name">Logout</span></a></li>
+        <li class="mode">
+          <a href="#"><i class="uil uil-moon"></i><span class="link-name">Dark Mode</span></a>
+          <div class="mode-toggle"><span class="switch"></span></div>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Main Dashboard -->
+  <section class="dashboard">
+    <div class="top">
+      <i class="uil uil-bars sidebar-toggle"></i>
+      <div class="search-box">
+        <i class="uil uil-search"></i>
+        <input type="text" placeholder="Search here..." />
+      </div>
+      <img src="images/profile.jpg" alt="profile" />
+    </div>
+
+    <div class="dash-content">
+      <div class="overview">
+        <div class="title">
+          <i class="uil uil-tachometer-fast-alt"></i>
+          <span class="text">Manage Educator Account</span>
+        </div>
+
+        <!-- Educator List Table -->
+        <div class="activity">
+          <div class="title">
+            <i class="uil uil-users-alt"></i>
+            <span class="text">Educator List</span>
+          </div>
+
+          <div class="activity-data">
+            <table style="width: 100%; border-collapse: collapse;">
+              <thead>
+                <tr style="text-align: left; border-bottom: 2px solid #ccc;">
+                  <th style="padding: 10px;">Name</th>
+                  <th style="padding: 10px;">Email</th>
+                  <th style="padding: 10px;">Action</th>
+                </tr>
+              </thead>
+              <tbody id="educatorTableBody">
+                <!-- Filled by JavaScript -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Add New Educator -->
+<div class="activity">
+  <div class="title">
+    <i class="uil uil-plus"></i>
+    <span class="text">Add New Educator</span>
+  </div>
+
+  <div class="add-educator-box">
+    <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+      <div style="flex: 1;">
+        <label for="newName" class="data-title">Full Name</label>
+        <input type="text" id="newName" placeholder="Enter full name" class="input-field" />
+      </div>
+      <div style="flex: 1;">
+        <label for="newEmail" class="data-title">Email</label>
+        <input type="email" id="newEmail" placeholder="Enter email address" class="input-field" />
+      </div>
+      <div style="flex: 1;">
+        <label for="newPass" class="data-title">Password</label>
+        <input type="password" id="newPass" placeholder="Enter password" class="input-field" />
+      </div>
+      <div style="flex: 1;">
+        <label for="newMykad" class="data-title">Mykad</label>
+        <input type="text" id="newMykad" placeholder="Enter Mykad" class="input-field" pattern="\d{12}" title="Enter a 12-digit MyKad number" required />
+      </div>
+      <div style="flex: 1;">
+        <label for="newOrg" class="data-title">Organization</label>
+        <input type="text" id="newOrg" placeholder="Enter Organization" class="input-field" />
+      </div>
+      <div style="flex: 1;">
+        <label for="newTitle" class="data-title">Title</label>
+        <input type="text" id="newTitle" placeholder="Enter Title" class="input-field" />
+      </div>
+    </div>
+    <div style="text-align: right;">
+      <button onclick="addEducator()" class="button add-btn">Add Educator</button>
+    </div>
+  </div>
+</div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Script -->
+   
+  <script>
+  async function fetchEducators() {
+    try {
+      const response = await fetch("http://localhost:8080/api/educators");
+      const data = await response.json();
+      educators = data.map(user => ({
+        id: user.id,
+        name: user.name,
+        email: user.email
+      }));
+      renderTable();
+    } catch (error) {
+      console.error("Failed to fetch educators:", error);
+    }
+  }
+
+  function renderTable() {
+    const tbody = document.getElementById("educatorTableBody");
+    tbody.innerHTML = "";
+
+    educators.forEach((educator, index) => {
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td style="padding: 10px;">${educator.name}</td>
+        <td style="padding: 10px;">${educator.email}</td>
+        <td style="padding: 10px;">
+          <button onclick="deleteEducator(${educator.id}, ${index})" class="button delete-btn">Delete</button>
+        </td>
+      `;
+      tbody.appendChild(row);
+    });
+  }
+
+  async function deleteEducator(id, index) {
+  const confirmDelete = confirm(`Delete educator '${educators[index].name}'?`);
+  if (!confirmDelete) return;
+
+  try {
+    const response = await fetch(`http://localhost:8080/api/educators/${id}`, {
+      method: "DELETE"
+    });
+
+    if (response.ok) {
+      educators.splice(index, 1);
+      renderTable();
+      alert("Educator deleted successfully.");
+    } else {
+      alert("Failed to delete educator.");
+    }
+  } catch (error) {
+    console.error("Error deleting educator:", error);
+    alert("An error occurred while deleting the educator.");
+  }
+}
+
+
+  async function addEducator() {
+  const name = document.getElementById("newName").value.trim();
+  const email = document.getElementById("newEmail").value.trim();
+  const password = document.getElementById("newPass").value.trim();
+  const mykad = document.getElementById("newMykad").value.trim();
+  const organization = document.getElementById("newOrg").value.trim();
+  const title = document.getElementById("newTitle").value.trim();
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const mykadRegex = /^\d{12}$/;
+
+  if (!name || !email || !password) {
+    alert("Please fill in all required fields.");
+    return;
+  }
+
+  if (!emailRegex.test(email)) {
+    alert("Invalid email format.");
+    return;
+  }
+
+  if (!mykadRegex.test(mykad)) {
+    alert("Mykad must be 12 digits.");
+    return;
+  }
+
+  const newEducator = {
+    name: name,
+    email: email,
+    password: password,
+    mykad: mykad,
+    organization: organization,
+    title: title,
+
+    // you can add other fields as needed
+  };
+
+  try {
+    const response = await fetch("http://localhost:8080/api/educators", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(newEducator)
+    });
+
+    if (response.ok) {
+      const savedEducator = await response.json();
+      educators.push({
+        id: savedEducator.id,
+        name: savedEducator.name,
+        email: savedEducator.email,    
+      
+
+      });
+      renderTable();
+      alert("Educator added successfully.");
+
+      // Clear input fields
+      document.getElementById("newName").value = "";
+      document.getElementById("newEmail").value = "";
+      document.getElementById("newPass").value = "";
+      document.getElementById("newMykad").value = "";
+      document.getElementById("newOrg").value = "";
+      document.getElementById("newTitle").value = "";
+
+    } else {
+      alert("Failed to add educator.");
+    }
+  } catch (error) {
+    console.error("Error adding educator:", error);
+    alert("An error occurred while adding the educator.");
+  }
+}
+
+
+  let educators = [];
+  fetchEducators();
+</script>
+
+  <script src="script.js"></script>
+</body>
+</html>

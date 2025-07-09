@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Educator Profile</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.8/css/line.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+<nav>
+    <div class="logo-name">
+        <div class="logo-image">
+            <img src="images/logo.png" alt="">
+        </div>
+        <span class="logo_name">APS</span>
+    </div>
+    <div class="menu-items">
+        <ul class="nav-links">
+            <li><a href="/index">
+                <i class="uil uil-estate"></i>
+                <span class="link-name">Dashboard</span>
+            </a></li>
+            <li><a href="/prediction">
+                <i class="uil uil-files-landscapes"></i>
+                <span class="link-name">Prediction</span>
+            </a></li>
+            <li><a href="/educatorprofile">
+                <i class="uil uil-user"></i>
+                <span class="link-name">Profile</span>
+            </a></li>
+        </ul>
+        <ul class="logout-mode">
+            <li><a href="/login">
+                <i class="uil uil-signout"></i>
+                <span class="link-name">Logout</span>
+            </a></li>
+            <li class="mode">
+                <a href="#"><i class="uil uil-moon"></i>
+                    <span class="link-name">Dark Mode</span>
+                </a>
+                <div class="mode-toggle"><span class="switch"></span></div>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<section class="dashboard">
+    <div class="top">
+        <i class="uil uil-bars sidebar-toggle"></i>
+        <div class="search-box">
+            <i class="uil uil-search"></i>
+            <input type="text" placeholder="Search here...">
+        </div>
+        <img src="images/profile.jpg" alt="">
+    </div>
+
+    <div class="dash-content">
+        <div class="overview">
+            <div class="title">
+                <i class="uil uil-user"></i>
+                <span class="text">Educator Profile</span>
+            </div>
+
+            <div class="profile-card">
+                <div class="profile-header">
+                    <h2>Profile Information</h2>
+                    <button id="editBtn">Edit</button>
+                </div>
+
+                <form id="profileForm">
+                    <div class="form-group">
+                        <label for="name">Full Name</label>
+                        <input type="text" id="name" value="Nur Farhana" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label for="title">Title</label>
+                        <input type="text" id="title" value="Dr" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label for="organization">Organization</label>
+                        <input type="text" id="organization" value="Universiti Sains Malaysia" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label for="mykad">MyKad</label>
+                        <input type="text" id="mykad" value="880101-14-5678" disabled>
+                    </div>
+
+                    <button type="submit" id="saveBtn" style="display: none;">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    // const editBtn = document.getElementById('editBtn');
+    // const saveBtn = document.getElementById('saveBtn');
+    // const inputs = document.querySelectorAll('#profileForm input');
+
+    // editBtn.addEventListener('click', () => {
+    //     inputs.forEach(input => input.disabled = false);
+    //     saveBtn.style.display = 'inline-block';
+    // });
+
+    // document.getElementById('profileForm').addEventListener('submit', function (e) {
+    //     e.preventDefault();
+    //     inputs.forEach(input => input.disabled = true);
+    //     saveBtn.style.display = 'none';
+    //     alert('Profile updated successfully!');
+    //     // TODO: Send updated data to backend via fetch or form submission
+    // });
+
+    // const educatorId = sessionStorage.getItem("userId");
+    // const editBtn = document.getElementById('editBtn');
+    // const saveBtn = document.getElementById('saveBtn');
+    // const inputs = document.querySelectorAll('#profileForm input');
+
+    // // Enable editing
+    // editBtn.addEventListener('click', () => {
+    //     inputs.forEach(input => input.disabled = false);
+    //     saveBtn.style.display = 'inline-block';
+    // });
+
+    // // Load profile data from backend
+    // fetch(`/api/users/${educatorId}`)
+    //     .then(response => response.json())
+    //     .then(data => {
+    //         document.getElementById('name').value = data.name;
+    //         document.getElementById('title').value = data.title;
+    //         document.getElementById('organization').value = data.organization;
+    //         document.getElementById('mykad').value = data.mykad;
+    //     });
+
+    // // Save updated data
+    // document.getElementById('profileForm').addEventListener('submit', function (e) {
+    //     e.preventDefault();
+
+    //     const updatedProfile = {
+    //         name: document.getElementById('name').value,
+    //         title: document.getElementById('title').value,
+    //         organization: document.getElementById('organization').value,
+    //         mykad: document.getElementById('mykad').value
+    //     };
+
+    //     fetch(`/api/users/${educatorId}`, {
+    //         method: 'PUT',
+    //         headers: {
+    //             'Content-Type': 'application/json'
+    //         },
+    //         body: JSON.stringify(updatedProfile)
+    //     })
+    //     .then(response => {
+    //         if (response.ok) {
+    //             alert("Profile updated successfully!");
+    //             inputs.forEach(input => input.disabled = true);
+    //             saveBtn.style.display = 'none';
+    //         } else {
+    //             alert("Failed to update profile.");
+    //         }
+    //     });
+    // });
+
+    let educatorId;
+    const editBtn = document.getElementById('editBtn');
+    const saveBtn = document.getElementById('saveBtn');
+    const inputs = document.querySelectorAll('#profileForm input');
+
+    fetch('/api/users/me')
+    .then(response => {
+        if (!response.ok) throw new Error("Not logged in");
+        return response.json();
+    })
+    .then(user => {
+        educatorId = user.id;
+
+        // Populate form fields
+      document.getElementById('name').value = user.name || '';
+      document.getElementById('title').value = user.title || '';
+      document.getElementById('organization').value = user.organization || '';
+      document.getElementById('mykad').value = user.mykad || '';
+    })
+    .catch(error => {
+        console.error("Error loading user data:", error);
+        alert("You must be logged in to view this page.");
+    });
+
+    // Enable form for editing
+    editBtn.addEventListener('click', () => {
+        inputs.forEach(input => input.disabled = false);
+        saveBtn.style.display = 'inline-block';
+    });
+
+    // Save updated data
+    document.getElementById('profileForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const updatedProfile = {
+        name: document.getElementById('name').value,
+        title: document.getElementById('title').value,
+        organization: document.getElementById('organization').value,
+        mykad: document.getElementById('mykad').value
+        };
+
+    fetch(`/api/users/${educatorId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(updatedProfile)
+    })
+    .then(response => {
+      if (response.ok) {
+        alert("Profile updated successfully!");
+        inputs.forEach(input => input.disabled = true);
+        saveBtn.style.display = 'none';
+      } else {
+        throw new Error("Update failed");
+      }
+    })
+    .catch(error => {
+      console.error("Update error:", error);
+      alert("Failed to update profile. Please try again.");
+    });
+  });
+
+
+</script>
+
+<style>
+    .profile-card {
+        background: var(--white);
+        border-radius: 10px;
+        padding: 2rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        max-width: 600px;
+        margin: 2rem auto;
+    }
+
+    .profile-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .profile-header h2 {
+        margin: 0;
+    }
+
+    .profile-header button {
+        padding: 0.5rem 1rem;
+        background-color: #3c91e6;
+        border: none;
+        border-radius: 5px;
+        color: #fff;
+        cursor: pointer;
+    }
+
+    .form-group {
+        margin-bottom: 1.2rem;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 0.4rem;
+        font-weight: 600;
+    }
+
+    .form-group input {
+        width: 100%;
+        padding: 0.6rem;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        font-size: 1rem;
+    }
+
+    #saveBtn {
+        margin-top: 1rem;
+        background-color: #28a745;
+        border: none;
+        padding: 0.6rem 1.2rem;
+        color: #fff;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+</style>
+
+</body>
+</html>

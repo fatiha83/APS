@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <!-- ======== CSS ======== -->
+  <link rel="stylesheet" href="style.css" />
+  
+  <!-- ======== Iconscout CSS ======== -->
+  <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css" />
+
+  <title>Manage Educator Account</title>
+
+  <style>
+    /* Delete button styling */
+.button.delete-btn {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  font-weight: 500;
+}
+
+.button.delete-btn:hover {
+  background-color: #c0392b;
+}
+
+/* Add Educator form box */
+.add-educator-box {
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  /* max-width: 800px; */
+  width: 100%;
+  margin-top: 20px;
+}
+
+/* Form input styling */
+.input-field {
+  width: 100%;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  margin-top: 8px;
+  margin-bottom: 16px;
+  font-size: 14px;
+}
+
+/* Add button in form */
+.button.add-btn {
+  background-color: #3498db;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+
+.button.add-btn:hover {
+  background-color: #2980b9;
+}
+
+#educatorPredictionsChart {
+  max-width: 100%;
+}
+
+.chart-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 100px;
+  margin-top: 20px;
+  width: 100%;
+  flex-wrap: wrap; /* Optional: allows wrapping on small screens */
+}
+
+.chart-container {
+  max-width: 400px; /* Control the width of each chart */
+  width: 100%;      /* Make it responsive */
+}
+
+
+  </style>
+</head>
+<body>
+  <!-- Sidebar -->
+  <nav>
+    <div class="logo-name">
+      <div class="logo-image">
+        <img src="images/logo.png" alt="logo" />
+      </div>
+      <span class="logo_name">APS</span>
+    </div>
+
+    <div class="menu-items">
+      <ul class="nav-links">
+        <li><a href="/admindashboard"><i class="uil uil-estate"></i><span class="link-name">Dashboard</span></a></li>
+        <li><a href="/systemmonitor"><i class="uil uil-estate"></i><span class="link-name">System Monitor</span></a></li>
+      </ul>
+
+      <ul class="logout-mode">
+        <li><a href="/login"><i class="uil uil-signout"></i><span class="link-name">Logout</span></a></li>
+        <li class="mode">
+          <a href="#"><i class="uil uil-moon"></i><span class="link-name">Dark Mode</span></a>
+          <div class="mode-toggle"><span class="switch"></span></div>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Main Dashboard -->
+  <section class="dashboard">
+    <div class="top">
+      <i class="uil uil-bars sidebar-toggle"></i>
+      <div class="search-box">
+        <i class="uil uil-search"></i>
+        <input type="text" placeholder="Search here..." />
+      </div>
+      <img src="images/profile.jpg" alt="profile" />
+    </div>
+
+    <div class="dash-content">
+      <div class="overview">
+
+        <!-- System Monitor -->
+        <div class="activity" id="systemMonitor" style="margin-top: 40px;">
+        <div class="title">
+            <i class="uil uil-monitor"></i>
+            <span class="text">System Monitor</span>
+        </div>
+
+        <div class="add-educator-box">
+            <p><strong>Status:</strong> <span id="systemStatus">Loading...</span></p>
+            <p><strong>CPU Usage:</strong> <span id="cpuUsage">-</span></p>
+            <p><strong>Memory Usage:</strong> <span id="memoryUsage">-</span></p>
+            <p><strong>Active Tasks:</strong> <span id="taskQueue">-</span></p>
+            <p><strong>Latest Log:</strong> <span id="latestLog">-</span></p>
+            <p><strong>Warnings/Errors:</strong> <span id="errorLogs">-</span></p>
+        </div>
+
+        <div class="chart-wrapper">
+        <div class="chart-container">
+            <canvas id="cpuChart" height="100"></canvas>
+        </div>
+        <div class="chart-container">
+            <canvas id="memoryChart" height="100"></canvas>
+        </div>
+        </div>
+
+
+
+
+        <div id="alertBox" style="display: none; background-color: #ffcccc; color: #900; padding: 10px; border-radius: 6px; margin-top: 20px;">
+            ⚠️ High CPU usage detected! System may be under heavy load.
+        </div>
+        </div>
+
+        <!-- Prediction Monitor -->
+        <div class="activity" id="predictionMonitor" style="margin-top: 40px;">
+        <div class="title">
+            <i class="uil uil-chart-line"></i>
+            <span class="text">Prediction Monitor</span>
+        </div>
+
+        <div class="add-educator-box">
+            <p><strong>Total Predictions:</strong> <span id="totalPredictions">Loading...</span></p>
+            <p><strong>Predictions per Educator:</strong></p>
+            <ul id="educatorPredictionsList"></ul>
+        </div>
+        
+        <!-- <div style="max-width: 600px; margin: 20px auto;">
+            <canvas id="educatorPredictionsChart" height="100"></canvas>
+        </div> -->
+
+        <div style="max-width: 600px; height: 300px; margin: 20px auto;">
+            <canvas id="educatorPredictionsChart"></canvas>
+        </div>
+
+
+
+        <div style="margin-top: 20px;">
+            <canvas id="predictionHistoryChart" height="100"></canvas>
+        </div>
+        </div>
+
+
+        <!-- Chart.js CDN -->
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+        <script>
+        let cpuChart, memoryChart;
+
+        function initCharts() {
+            const ctxCpu = document.getElementById('cpuChart').getContext('2d');
+            cpuChart = new Chart(ctxCpu, {
+            type: 'bar',
+            data: {
+                labels: ['CPU Usage'],
+                datasets: [{
+                label: 'CPU (%)',
+                data: [0],
+                backgroundColor: '#36a2eb'
+                }]
+            },
+            options: {
+                responsive: false,
+                scales: {
+                y: { beginAtZero: true, max: 100 }
+                }
+            }
+            });
+
+            const ctxMemory = document.getElementById('memoryChart').getContext('2d');
+            memoryChart = new Chart(ctxMemory, {
+            type: 'bar',
+            data: {
+                labels: ['Used Memory'],
+                datasets: [{
+                label: 'Memory (MB)',
+                data: [0],
+                backgroundColor: '#4bc0c0'
+                }]
+            },
+            options: {
+                responsive: false,
+                scales: {
+                y: { beginAtZero: true }
+                }
+            }
+            });
+        }
+
+        async function fetchSystemMonitor() {
+            try {
+            const response = await fetch("/api/systemmonitor");
+            const data = await response.json();
+
+            const cpuUsage = parseFloat(data.cpuUsage).toFixed(2);
+            const memory = data.memoryUsage.split(" / ");
+            const usedMemory = parseFloat(memory[0]);
+
+            document.getElementById("systemStatus").innerText = "Running";
+            document.getElementById("cpuUsage").innerText = cpuUsage + " %";
+            document.getElementById("memoryUsage").innerText = data.memoryUsage;
+            document.getElementById("taskQueue").innerText = data.taskQueue || "0";
+            document.getElementById("latestLog").innerText = data.latestLog || "No logs yet.";
+            document.getElementById("errorLogs").innerText = data.errors || "None";
+
+            // Update Charts
+            cpuChart.data.datasets[0].data[0] = cpuUsage;
+            cpuChart.update();
+
+            memoryChart.data.datasets[0].data[0] = usedMemory;
+            memoryChart.update();
+
+            // Show alert if CPU > 80%
+            const alertBox = document.getElementById("alertBox");
+            if (cpuUsage > 80) {
+                alertBox.style.display = "block";
+            } else {
+                alertBox.style.display = "none";
+            }
+
+            } catch (error) {
+            console.error("Error fetching system monitor data:", error);
+            document.getElementById("systemStatus").innerText = "Offline/Error";
+            }
+        }
+
+        // Initial chart setup
+        initCharts();
+
+        // Fetch data every 10 seconds
+        fetchSystemMonitor();
+        setInterval(fetchSystemMonitor, 10000);
+
+        //prediction metrics
+        let educatorPredictionsChart;
+
+
+    //     async function fetchPredictionMetrics() {
+    //     try {
+    //         const response = await fetch("/api/predictionmetrics");
+    //         const data = await response.json();
+
+    //         document.getElementById("totalPredictions").innerText = data.totalPredictions;
+
+    //     } catch (err) {
+    //         console.error("Error loading prediction metrics:", err);
+    //     }
+    // }
+
+    async function fetchPredictionMetrics() {
+    try {
+        const response = await fetch("/api/predictionmetrics");
+        const data = await response.json();
+
+        document.getElementById("totalPredictions").innerText = data.totalPredictions;
+
+        const list = document.getElementById("educatorPredictionsList");
+        list.innerHTML = "";
+
+        const labels = [];
+        const counts = [];
+
+        if (data.predictionsPerEducator) {
+            Object.entries(data.predictionsPerEducator).forEach(([educator, count]) => {
+                const li = document.createElement("li");
+                li.textContent = `${educator}: ${count}`;
+                list.appendChild(li);
+
+                labels.push(educator);
+                counts.push(count);
+            });
+        }
+
+        // Draw or update bar chart
+        // const ctx = document.getElementById("educatorPredictionsChart").getContext("2d");
+        // if (!educatorPredictionsChart) {
+        //     educatorPredictionsChart = new Chart(ctx, {
+        //         type: 'bar',
+        //         data: {
+        //             labels: labels,
+        //             datasets: [{
+        //                 label: 'Predictions per Educator',
+        //                 data: counts,
+        //                 backgroundColor: '#9b59b6'
+        //             }]
+        //         },
+        //         options: {
+        //             responsive: true,
+        //             scales: {
+        //                 y: {
+        //                     beginAtZero: true,
+        //                     stepSize: 1
+        //                 }
+        //             }
+        //         }
+        //     });
+        // } else {
+        //     educatorPredictionsChart.data.labels = labels;
+        //     educatorPredictionsChart.data.datasets[0].data = counts;
+        //     educatorPredictionsChart.update();
+        // }
+
+        const ctxEducator = document.getElementById("educatorPredictionsChart").getContext("2d");
+
+        new Chart(ctxEducator, {
+        type: 'bar',
+        data: {
+            labels: Object.keys(data.predictionsPerEducator),
+            datasets: [{
+            label: 'Predictions per Educator',
+            data: Object.values(data.predictionsPerEducator),
+            backgroundColor: '#9b59b6'
+            }]
+        },
+        options: {
+            responsive: false,
+            maintainAspectRatio: false,
+            scales: {
+            y: {
+                beginAtZero: true,
+                ticks: { precision: 0 } // remove decimal ticks
+            }
+            },
+            plugins: {
+            legend: {
+                display: true,
+                position: 'top'
+            }
+            }
+        }
+        });
+
+    } catch (err) {
+        console.error("Error loading prediction metrics:", err);
+    }
+}
+
+
+    // Only fetch metrics periodically
+    fetchPredictionMetrics();
+    setInterval(fetchPredictionMetrics, 15000); // update every 15 seconds
+
+        </script>
+
+
+</body>
+</html>
